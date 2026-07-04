@@ -200,8 +200,10 @@ The bot also **proactively posts** to the configured alert channel whenever an a
 ## Diagrams
 
 ### System Architecture Diagram
-See [`docs/diagrams/system-diagram.svg`](docs/diagrams/system-diagram.svg) for the full data-flow diagram:
-`Office Devices → DeviceSimulator → OfficeStore ↔ AlertEngine → Express API + Socket.IO → React Dashboard (WebSocket) + Discord Bot (HTTP + WS)`
+
+![System Architecture](docs/diagrams/system-diagram.svg)
+
+> Full data-flow: `Office Devices → DeviceSimulator → OfficeStore ↔ AlertEngine → Express API + Socket.IO → React Dashboard (WebSocket) + Discord Bot (HTTP + WS)`
 
 ### Hardware / Electrical Schematic (Wokwi)
 The ESP32 circuit for one representative room is in [`docs/wokwi/`](docs/wokwi/):
@@ -215,7 +217,7 @@ Circuit covers: ESP32 + 5 relay-simulated LEDs (Fan1=GPIO14, Fan2=GPIO27, Light1
 
 ## Video Demo
 
-> 🎥 **[Watch the demo on Google Drive](https://drive.google.com/your-link-here)**
+> 🎥 **[Watch the demo on Google Drive](https://drive.google.com/drive/folders/1C8hBTlZiUl3VOT6sdjvaUPc38wtIaKRo?usp=sharing)**
 >
 > *(Upload your recorded demo to Google Drive with link sharing set to public, then replace the URL above)*
 
