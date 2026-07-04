@@ -1,5 +1,6 @@
 import { Client, Message } from "discord.js";
 import { BackendApi } from "./BackendApi";
+import { formatResponse } from "./LlmFormatter";
 import { env } from "../config/env";
 import { formatOfficeStatus, formatRoomSummary, formatUsageSummary } from "../utils/format";
 
@@ -41,8 +42,9 @@ export class CommandHandler {
 
   private async respondWithStatus(message: Message): Promise<void> {
     const rooms = (await this.api.getRooms()).data;
-    const opening = "Here’s the current office snapshot:";
-    await message.reply(`${opening}\n${formatOfficeStatus(rooms)}`);
+    const rawText = formatOfficeStatus(rooms);
+    const reply = await formatResponse("status", { rooms }, rawText);
+    await message.reply(reply);
   }
 
   private async respondWithRoom(message: Message, roomCode: string): Promise<void> {
@@ -57,25 +59,31 @@ export class CommandHandler {
       return;
     }
 
-    const friendly = room.devicesOn === 0 ? "Everything looks calm." : room.devicesOn === room.totalDevices ? "Everything is running." : "A few devices are active.";
-    await message.reply(`${formatRoomSummary(room)} ${friendly}`);
+    const rawText = formatRoomSummary(room);
+    const reply = await formatResponse("room", { room }, rawText);
+    await message.reply(reply);
   }
 
   private async respondWithUsage(message: Message): Promise<void> {
     const usage = await this.api.getUsage();
-    await message.reply(`The office is using ${formatUsageSummary(usage)}`);
+    const rawText = formatUsageSummary(usage);
+    const reply = await formatResponse("usage", { usage }, rawText);
+    await message.reply(reply);
   }
 
   private async respondWithAlerts(message: Message): Promise<void> {
     const alerts = await this.api.getAlertPayloads();
 
     if (alerts.length === 0) {
-      await message.reply("No active alerts right now. The office is behaving itself.");
+      const reply = await formatResponse("alerts", { alerts: [] }, "No active alerts right now. The office is behaving itself.");
+      await message.reply(reply);
       return;
     }
 
-    const lines = alerts.slice(0, 5).map((alert) => `• ${alert.roomName}: ${alert.title}`);
+    const rawLines = alerts.slice(0, 5).map((alert) => `• ${alert.roomName}: ${alert.title}`);
     const suffix = alerts.length > 5 ? `\nAnd ${alerts.length - 5} more.` : "";
-    await message.reply(`Here are the active alerts I’m watching:\n${lines.join("\n")}${suffix}`);
+    const rawText = `Active alerts:\n${rawLines.join("\n")}${suffix}`;
+    const reply = await formatResponse("alerts", { alerts }, rawText);
+    await message.reply(reply);
   }
 }
