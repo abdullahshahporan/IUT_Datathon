@@ -33,6 +33,9 @@ export function createBackendRuntime(): BackendRuntime {
   const alertEngine = new AlertEngine(store);
   const simulator = new DeviceSimulator(store, alertEngine, io);
 
+  app.set("io", io);
+  app.set("alertEngine", alertEngine);
+
   return {
     store,
     alertEngine,

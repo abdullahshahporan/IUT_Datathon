@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { ArrowUpDown, Search } from "lucide-react";
+import { ArrowUpDown, Search, Fan, Lightbulb } from "lucide-react";
 import { Card, CardDescription, CardTitle } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
@@ -10,7 +10,12 @@ import { cn } from "@/lib/cn";
 
 type SortKey = "roomName" | "name" | "status" | "powerDrawWatts" | "lastChangedAt";
 
-export function DeviceTable({ devices }: { devices: DeviceRecord[] }) {
+interface DeviceTableProps {
+  devices: DeviceRecord[];
+  onToggleDevice?: (deviceId: string) => void;
+}
+
+export function DeviceTable({ devices, onToggleDevice }: DeviceTableProps) {
   const [query, setQuery] = useState("");
   const [room, setRoom] = useState("all");
   const [type, setType] = useState("all");
@@ -108,16 +113,42 @@ export function DeviceTable({ devices }: { devices: DeviceRecord[] }) {
             </thead>
             <tbody className="divide-y divide-white/10 bg-ink-900/30 text-slate-200">
               {filtered.map((device) => (
-                <tr key={device.id} className="hover:bg-white/5">
-                  <td className="px-4 py-3 text-slate-300">{device.roomName}</td>
+                <tr key={device.id} className="hover:bg-white/5 transition-colors duration-150">
+                  <td className="px-4 py-3 text-slate-300 font-medium">{device.roomName}</td>
                   <td className="px-4 py-3">
-                    <div>
-                      <p className="font-medium text-white">{device.name}</p>
-                      <p className="text-xs uppercase tracking-[0.25em] text-slate-500">{device.type}</p>
+                    <div className="flex items-center gap-3">
+                      <div className={cn(
+                        "flex h-8 w-8 items-center justify-center rounded-xl border transition-all duration-300",
+                        device.status === "ON"
+                          ? device.type === "fan"
+                            ? "border-aurora-400/25 bg-aurora-500/15 text-aurora-300 shadow-[0_0_12px_rgba(20,184,166,0.15)]"
+                            : "border-ember-400/25 bg-ember-500/15 text-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.15)]"
+                          : "border-white/5 bg-white/5 text-slate-500"
+                      )}>
+                        {device.type === "fan" ? (
+                          <Fan className={cn("h-4 w-4", device.status === "ON" ? "animate-spinSlow" : "")} />
+                        ) : (
+                          <Lightbulb className="h-4 w-4" />
+                        )}
+                      </div>
+                      <div>
+                        <p className="font-semibold text-white">{device.name}</p>
+                        <p className="text-xs uppercase tracking-[0.2em] text-slate-500 font-medium">{device.type}</p>
+                      </div>
                     </div>
                   </td>
                   <td className="px-4 py-3">
-                    <Badge variant={device.status === "ON" ? "success" : "neutral"}>{device.status}</Badge>
+                    <button
+                      onClick={() => onToggleDevice?.(device.id)}
+                      disabled={!onToggleDevice}
+                      className={cn(
+                        "transition hover:scale-105 active:scale-95 disabled:hover:scale-100 focus:outline-none focus:ring-2 focus:ring-aurora-500/50 rounded-full",
+                        onToggleDevice ? "cursor-pointer" : ""
+                      )}
+                      title={onToggleDevice ? `Click to turn ${device.status === "ON" ? "OFF" : "ON"}` : undefined}
+                    >
+                      <Badge variant={device.status === "ON" ? "success" : "neutral"}>{device.status}</Badge>
+                    </button>
                   </td>
                   <td className="px-4 py-3 font-medium">{formatWatts(device.powerDrawWatts)}</td>
                   <td className="px-4 py-3 text-slate-300">

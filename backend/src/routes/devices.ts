@@ -66,5 +66,45 @@ export function createDevicesRouter(store: OfficeStore): Router {
     });
   });
 
+  router.post("/:id/toggle", (request, response) => {
+    const deviceId = request.params.id;
+    const timestamp = new Date();
+
+    const change = store.toggleDevice(deviceId, "manual", timestamp);
+    if (!change) {
+      return response.status(404).json({ message: "Device not found" });
+    }
+
+    const io = request.app.get("io");
+    const alertEngine = request.app.get("alertEngine");
+
+    if (io) {
+      io.emit("device:update", change.current);
+    }
+
+    if (alertEngine && io) {
+      const alerts = alertEngine.evaluateDeviceChange(change);
+      for (const alert of alerts) {
+        io.emit("alert:new", alert);
+      }
+    }
+
+    const usage = store.sampleSnapshot(timestamp);
+    if (io) {
+      io.emit("usage:update", usage);
+    }
+
+    if (alertEngine && io) {
+      const powerAlerts = alertEngine.evaluateHighPowerAlert(usage.currentWatts, timestamp);
+      for (const alert of powerAlerts) {
+        io.emit("alert:new", alert);
+      }
+    }
+
+    return response.json({
+      data: change,
+    });
+  });
+
   return router;
 }

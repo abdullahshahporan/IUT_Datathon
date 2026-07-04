@@ -88,3 +88,26 @@ export interface RealtimePayloads {
   "alert:new": AlertRecord;
   "usage:update": UsageSnapshot;
 }
+
+export interface DeviceListResponse {
+  data: DeviceRecord[];
+  total: number;
+}
+
+export interface RoomsResponse {
+  data: RoomSummary[];
+}
+
+export interface AlertsResponse {
+  data: AlertRecord[];
+}
+
+export interface UsageResponse {
+  data: {
+    usage: UsageSnapshot;
+    powerHistory: {
+      total: PowerPoint[];
+      rooms: Record<RoomId, PowerPoint[]>;
+    };
+  };
+}

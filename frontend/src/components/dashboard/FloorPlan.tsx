@@ -17,28 +17,45 @@ const roomShapes: RoomShape[] = [
   { id: "work-room-2", label: "Work Room 2", x: 66, y: 18 },
 ];
 
-function RoomIcon({ type, active }: { type: "fan" | "light"; active: boolean }) {
+interface RoomIconProps {
+  type: "fan" | "light";
+  active: boolean;
+  onClick?: () => void;
+  title?: string;
+}
+
+function RoomIcon({ type, active, onClick, title }: RoomIconProps) {
   const Icon = type === "fan" ? Fan : Lightbulb;
 
   return (
-    <div
+    <button
+      onClick={onClick}
+      disabled={!onClick}
+      title={title}
       className={cn(
-        "flex h-10 w-10 items-center justify-center rounded-2xl border transition-all",
+        "flex h-10 w-10 items-center justify-center rounded-2xl border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-aurora-500/50",
         active
           ? type === "fan"
             ? "border-aurora-400/30 bg-aurora-500/20 text-aurora-200 shadow-[0_0_24px_rgba(20,184,166,0.2)]"
             : "border-ember-400/30 bg-ember-500/20 text-amber-100 shadow-[0_0_24px_rgba(245,158,11,0.18)]"
-          : "border-white/10 bg-white/5 text-slate-500",
+          : "border-white/10 bg-white/5 text-slate-500 hover:border-white/20 hover:bg-white/10",
         type === "fan" && active ? "animate-spinSlow" : "",
         type === "light" && active ? "animate-pulseGlow" : "",
+        onClick ? "cursor-pointer hover:scale-110 active:scale-95 disabled:hover:scale-100" : ""
       )}
     >
       <Icon className="h-4 w-4" />
-    </div>
+    </button>
   );
 }
 
-export function FloorPlan({ rooms, devices }: { rooms: RoomSummary[]; devices: DeviceRecord[] }) {
+interface FloorPlanProps {
+  rooms: RoomSummary[];
+  devices: DeviceRecord[];
+  onToggleDevice?: (deviceId: string) => void;
+}
+
+export function FloorPlan({ rooms, devices, onToggleDevice }: FloorPlanProps) {
   return (
     <Card>
       <div className="flex items-start justify-between gap-4">
@@ -55,11 +72,17 @@ export function FloorPlan({ rooms, devices }: { rooms: RoomSummary[]; devices: D
             const roomDevices = devices.filter((device) => device.roomId === shape.id);
             const activeLights = roomDevices.filter((device) => device.type === "light" && device.status === "ON").length;
             const activeFans = roomDevices.filter((device) => device.type === "fan" && device.status === "ON").length;
+            const hasActiveDevices = activeLights > 0 || activeFans > 0;
 
             return (
               <motion.div
                 key={shape.id}
-                className="relative rounded-[1.5rem] border border-white/10 bg-white/5 p-4"
+                className={cn(
+                  "relative rounded-[1.5rem] border p-4 transition-all duration-300 bg-white/5",
+                  hasActiveDevices
+                    ? "border-aurora-500/35 shadow-[0_0_24px_rgba(20,184,166,0.08)] bg-white/8"
+                    : "border-white/10"
+                )}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.08, duration: 0.35 }}
@@ -79,13 +102,25 @@ export function FloorPlan({ rooms, devices }: { rooms: RoomSummary[]; devices: D
                     .filter((device) => device.type === "light")
                     .slice(0, 3)
                     .map((device) => (
-                      <RoomIcon key={device.id} type="light" active={device.status === "ON"} />
+                      <RoomIcon
+                        key={device.id}
+                        type="light"
+                        active={device.status === "ON"}
+                        onClick={() => onToggleDevice?.(device.id)}
+                        title={`Toggle ${device.name}`}
+                      />
                     ))}
                   {roomDevices
                     .filter((device) => device.type === "fan")
                     .slice(0, 2)
                     .map((device) => (
-                      <RoomIcon key={device.id} type="fan" active={device.status === "ON"} />
+                      <RoomIcon
+                        key={device.id}
+                        type="fan"
+                        active={device.status === "ON"}
+                        onClick={() => onToggleDevice?.(device.id)}
+                        title={`Toggle ${device.name}`}
+                      />
                     ))}
                 </div>
 

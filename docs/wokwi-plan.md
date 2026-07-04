@@ -223,11 +223,11 @@ Take these screenshots for the `docs/diagrams/` folder:
 After building:
 
 1. Click **Share** (top right in Wokwi)
-2. Copy the URL (e.g. `https://wokwi.com/projects/XXXXXXXXX`)
+2. Copy the URL (e.g. `https://wokwi.com/projects/468603867658047489`)
 3. Add it to the README under the **Diagrams** section:
 
 ```md
-- [Wokwi Simulation](https://wokwi.com/projects/XXXXXXXXX) — ESP32 circuit for one room (2 fans + 3 lights + ACS712 current sensor)
+- [Wokwi Simulation](https://wokwi.com/projects/468603867658047489) — ESP32 circuit for one room (2 fans + 3 lights + ACS712 current sensor)
 ```
 
 ---

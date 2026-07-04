@@ -10,7 +10,7 @@ import { useOfficeMonitor } from "@/hooks/useOfficeMonitor";
 import { formatTime } from "@/lib/format";
 
 export function DashboardPage() {
-  const { officeSnapshot, devices, alerts, usage, powerHistory, dismissAlert } = useOfficeMonitor();
+  const { officeSnapshot, devices, alerts, usage, powerHistory, dismissAlert, toggleDevice } = useOfficeMonitor();
 
   return (
     <div className="space-y-6 pb-8">
@@ -42,11 +42,11 @@ export function DashboardPage() {
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-        <DeviceTable devices={devices} />
+        <DeviceTable devices={devices} onToggleDevice={toggleDevice} />
         <AlertsPanel alerts={alerts.slice(0, 5)} onDismiss={dismissAlert} />
       </div>
 
-      <FloorPlan rooms={officeSnapshot.rooms} devices={devices} />
+      <FloorPlan rooms={officeSnapshot.rooms} devices={devices} onToggleDevice={toggleDevice} />
     </div>
   );
 }

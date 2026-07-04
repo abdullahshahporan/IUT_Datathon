@@ -5,6 +5,7 @@ import {
   fetchRooms,
   fetchUsage,
   dismissAlert as dismissAlertRequest,
+  toggleDevice as toggleDeviceRequest,
 } from "@/lib/api";
 import { getSocket } from "@/lib/socket";
 import {
@@ -162,6 +163,14 @@ export function useOfficeMonitor() {
     setAlerts((current) => current.map((alert) => (alert.id === dismissed.id ? dismissed : alert)));
   }
 
+  async function toggleDevice(deviceId: string): Promise<void> {
+    try {
+      await toggleDeviceRequest(deviceId);
+    } catch (err) {
+      console.error("Failed to toggle device:", err);
+    }
+  }
+
   return {
     loadingState,
     error,
@@ -172,5 +181,6 @@ export function useOfficeMonitor() {
     powerHistory,
     officeSnapshot,
     dismissAlert,
+    toggleDevice,
   };
 }

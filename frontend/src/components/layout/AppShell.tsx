@@ -39,8 +39,10 @@ export function AppShell({ children }: { children: ReactNode }) {
                     to={item.to}
                     className={({ isActive }) =>
                       cn(
-                        "flex items-center gap-3 rounded-2xl px-4 py-3 text-sm transition-all",
-                        isActive ? "bg-white text-slate-950 shadow-lg" : "text-slate-300 hover:bg-white/8 hover:text-white",
+                        "flex items-center gap-3 rounded-2xl px-4 py-3 text-sm transition-all duration-300 border",
+                        isActive 
+                          ? "bg-gradient-to-r from-aurora-500/20 to-aurora-600/10 text-aurora-300 border-aurora-500/30 shadow-[0_0_24px_rgba(20,184,166,0.12)] font-medium" 
+                          : "text-slate-300 hover:bg-white/5 hover:text-white border-transparent",
                       )
                     }
                   >
@@ -91,8 +93,10 @@ export function AppShell({ children }: { children: ReactNode }) {
                     to={item.to}
                     className={({ isActive }) =>
                       cn(
-                        "flex flex-1 items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm transition-all",
-                        isActive ? "bg-white text-slate-950" : "bg-white/5 text-slate-300",
+                        "flex flex-1 items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm transition-all duration-300 border",
+                        isActive 
+                          ? "bg-gradient-to-r from-aurora-500/20 to-aurora-600/10 text-aurora-300 border-aurora-500/30 shadow-[0_0_20px_rgba(20,184,166,0.1)] font-medium" 
+                          : "bg-white/5 text-slate-300 border-transparent",
                       )
                     }
                   >
