@@ -197,6 +197,29 @@ The bot also **proactively posts** to the configured alert channel whenever an a
 
 ## Diagrams
 
-See the [`docs/diagrams/`](docs/diagrams/) folder for:
-- `system-diagram.png` — high-level data flow diagram
-- `wokwi-schematic.png` — ESP32 + relay module hardware schematic (one representative room)
+## Diagrams
+
+### System Architecture Diagram
+See [`docs/diagrams/system-diagram.svg`](docs/diagrams/system-diagram.svg) for the full data-flow diagram:
+`Office Devices → DeviceSimulator → OfficeStore ↔ AlertEngine → Express API + Socket.IO → React Dashboard (WebSocket) + Discord Bot (HTTP + WS)`
+
+### Hardware / Electrical Schematic (Wokwi)
+The ESP32 circuit for one representative room is in [`docs/wokwi/`](docs/wokwi/):
+- [`docs/wokwi/diagram.json`](docs/wokwi/diagram.json) — import directly into [wokwi.com](https://wokwi.com)
+- [`docs/wokwi/sketch.ino`](docs/wokwi/sketch.ino) — Arduino firmware (paste into Wokwi's code editor)
+- [`docs/wokwi-plan.md`](docs/wokwi-plan.md) — full wiring guide, pin mapping, and electrical reasoning
+
+Circuit covers: ESP32 + 5 relay-simulated LEDs (Fan1=GPIO14, Fan2=GPIO27, Light1=GPIO26, Light2=GPIO25, Light3=GPIO33) + ACS712 current sensor (potentiometer on GPIO34) + push button (GPIO0).
+
+---
+
+## Video Demo
+
+> 🎥 **[Watch the demo on Google Drive](https://drive.google.com/your-link-here)**
+>
+> *(Upload your recorded demo to Google Drive with link sharing set to public, then replace the URL above)*
+
+The demo shows:
+1. Web dashboard live — devices toggling, power gauge, floor plan animations, alert feed
+2. Discord bot in action — `!status`, `!room work1`, `!usage`, `!alerts`, proactive alert message
+3. Brief explanation of the data flow and architecture

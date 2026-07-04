@@ -1,0 +1,157 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="720" viewBox="0 0 960 720" font-family="Arial, Helvetica, sans-serif">
+  <defs>
+    <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#475569"/>
+    </marker>
+    <marker id="arr-blue" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#2563eb"/>
+    </marker>
+    <marker id="arr-orange" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#ea580c"/>
+    </marker>
+    <marker id="arr-purple" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#7c3aed"/>
+    </marker>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-color="#00000020"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="960" height="720" fill="#f8fafc" rx="12"/>
+
+  <!-- ═══ TITLE ═══ -->
+  <text x="480" y="38" text-anchor="middle" font-size="22" font-weight="bold" fill="#0f172a">Smart Office Monitoring System — Architecture</text>
+  <line x1="120" y1="50" x2="840" y2="50" stroke="#cbd5e1" stroke-width="1"/>
+
+  <!-- ══════════════════════════════════════════
+       LAYER 1 — HARDWARE / DEVICE LAYER
+  ══════════════════════════════════════════ -->
+  <rect x="30" y="64" width="900" height="16" rx="4" fill="#e0f2fe"/>
+  <text x="480" y="76" text-anchor="middle" font-size="10" fill="#0369a1" font-weight="bold" letter-spacing="2">HARDWARE / SIMULATION LAYER</text>
+
+  <!-- 3 Room boxes -->
+  <rect x="60"  y="90" width="230" height="70" rx="8" fill="#dbeafe" stroke="#3b82f6" stroke-width="2" filter="url(#shadow)"/>
+  <text x="175" y="114" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e40af">Drawing Room</text>
+  <text x="175" y="131" text-anchor="middle" font-size="10" fill="#374151">2 fans (60W) + 3 lights (15W)</text>
+  <text x="175" y="148" text-anchor="middle" font-size="10" fill="#6b7280">ESP32 GPIO 14,27,26,25,33</text>
+
+  <rect x="365" y="90" width="230" height="70" rx="8" fill="#dbeafe" stroke="#3b82f6" stroke-width="2" filter="url(#shadow)"/>
+  <text x="480" y="114" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e40af">Work Room 1</text>
+  <text x="480" y="131" text-anchor="middle" font-size="10" fill="#374151">2 fans (60W) + 3 lights (15W)</text>
+  <text x="480" y="148" text-anchor="middle" font-size="10" fill="#6b7280">ESP32 GPIO 14,27,26,25,33</text>
+
+  <rect x="670" y="90" width="230" height="70" rx="8" fill="#dbeafe" stroke="#3b82f6" stroke-width="2" filter="url(#shadow)"/>
+  <text x="785" y="114" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e40af">Work Room 2</text>
+  <text x="785" y="131" text-anchor="middle" font-size="10" fill="#374151">2 fans (60W) + 3 lights (15W)</text>
+  <text x="785" y="148" text-anchor="middle" font-size="10" fill="#6b7280">ESP32 GPIO 14,27,26,25,33</text>
+
+  <!-- Arrows: rooms -> simulator -->
+  <line x1="175" y1="160" x2="310" y2="218" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)" stroke-dasharray="4,3"/>
+  <line x1="480" y1="160" x2="480" y2="218" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)" stroke-dasharray="4,3"/>
+  <line x1="785" y1="160" x2="650" y2="218" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)" stroke-dasharray="4,3"/>
+
+  <!-- ══════════════════════════════════════════
+       LAYER 2 — BACKEND SERVICES
+  ══════════════════════════════════════════ -->
+  <rect x="30" y="200" width="900" height="16" rx="4" fill="#dcfce7"/>
+  <text x="480" y="212" text-anchor="middle" font-size="10" fill="#15803d" font-weight="bold" letter-spacing="2">BACKEND SERVICES  (Node.js / TypeScript)</text>
+
+  <!-- DeviceSimulator -->
+  <rect x="60"  y="225" width="220" height="70" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="2" filter="url(#shadow)"/>
+  <text x="170" y="250" text-anchor="middle" font-size="13" font-weight="bold" fill="#166534">DeviceSimulator</text>
+  <text x="170" y="266" text-anchor="middle" font-size="10" fill="#374151">Toggles 15 devices every 3–6s</text>
+  <text x="170" y="282" text-anchor="middle" font-size="10" fill="#374151">Time-aware probability tables</text>
+
+  <!-- OfficeStore -->
+  <rect x="355" y="225" width="250" height="70" rx="8" fill="#f3e8ff" stroke="#9333ea" stroke-width="2" filter="url(#shadow)"/>
+  <text x="480" y="250" text-anchor="middle" font-size="13" font-weight="bold" fill="#6b21a8">OfficeStore</text>
+  <text x="480" y="266" text-anchor="middle" font-size="10" fill="#374151">Single in-memory source of truth</text>
+  <text x="480" y="282" text-anchor="middle" font-size="10" fill="#374151">Device state · Power history · Alerts</text>
+
+  <!-- AlertEngine -->
+  <rect x="680" y="225" width="220" height="70" rx="8" fill="#fef9c3" stroke="#ca8a04" stroke-width="2" filter="url(#shadow)"/>
+  <text x="790" y="250" text-anchor="middle" font-size="13" font-weight="bold" fill="#92400e">AlertEngine</text>
+  <text x="790" y="266" text-anchor="middle" font-size="10" fill="#374151">After-hours · Room-on-too-long</text>
+  <text x="790" y="282" text-anchor="middle" font-size="10" fill="#374151">High-power-consumption</text>
+
+  <!-- Bidirectional: Simulator <-> Store -->
+  <line x1="280" y1="260" x2="355" y2="260" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="355" y1="268" x2="280" y2="268" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Bidirectional: AlertEngine <-> Store -->
+  <line x1="680" y1="260" x2="605" y2="260" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="605" y1="268" x2="680" y2="268" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- ══════════════════════════════════════════
+       LAYER 3 — API / TRANSPORT
+  ══════════════════════════════════════════ -->
+  <rect x="30" y="330" width="900" height="16" rx="4" fill="#fee2e2"/>
+  <text x="480" y="342" text-anchor="middle" font-size="10" fill="#b91c1c" font-weight="bold" letter-spacing="2">API / TRANSPORT LAYER</text>
+
+  <rect x="200" y="354" width="560" height="72" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="2" filter="url(#shadow)"/>
+  <text x="480" y="378" text-anchor="middle" font-size="15" font-weight="bold" fill="#991b1b">Express REST API + Socket.IO Server</text>
+  <text x="480" y="396" text-anchor="middle" font-size="10" fill="#374151">GET /devices  ·  GET /rooms  ·  GET /alerts  ·  POST /alerts/:id/dismiss  ·  GET /usage</text>
+  <text x="480" y="412" text-anchor="middle" font-size="10" fill="#374151">Events emitted:  device:update  ·  alert:new  ·  usage:update</text>
+
+  <!-- Arrows from services to API -->
+  <line x1="170" y1="295" x2="310" y2="354" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="480" y1="295" x2="480" y2="354" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="790" y1="295" x2="650" y2="354" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- ══════════════════════════════════════════
+       LAYER 4 — CLIENTS
+  ══════════════════════════════════════════ -->
+  <rect x="30" y="460" width="900" height="16" rx="4" fill="#fff7ed"/>
+  <text x="480" y="472" text-anchor="middle" font-size="10" fill="#c2410c" font-weight="bold" letter-spacing="2">CLIENT LAYER</text>
+
+  <!-- React Dashboard -->
+  <rect x="60"  y="484" width="370" height="80" rx="8" fill="#fff7ed" stroke="#ea580c" stroke-width="2" filter="url(#shadow)"/>
+  <text x="245" y="508" text-anchor="middle" font-size="14" font-weight="bold" fill="#9a3412">React Dashboard</text>
+  <text x="245" y="526" text-anchor="middle" font-size="10" fill="#374151">WebSocket (real-time) + REST (initial load)</text>
+  <text x="245" y="542" text-anchor="middle" font-size="10" fill="#374151">Devices · Power gauge · Charts · Floor plan · Alerts</text>
+  <text x="245" y="558" text-anchor="middle" font-size="10" fill="#6b7280">http://localhost:5173</text>
+
+  <!-- Discord Bot -->
+  <rect x="530" y="484" width="370" height="80" rx="8" fill="#ede9fe" stroke="#7c3aed" stroke-width="2" filter="url(#shadow)"/>
+  <text x="715" y="508" text-anchor="middle" font-size="14" font-weight="bold" fill="#4c1d95">Discord Bot</text>
+  <text x="715" y="526" text-anchor="middle" font-size="10" fill="#374151">HTTP REST polling + WebSocket alert relay</text>
+  <text x="715" y="542" text-anchor="middle" font-size="10" fill="#374151">!status · !room · !usage · !alerts · proactive alerts</text>
+  <text x="715" y="558" text-anchor="middle" font-size="10" fill="#6b7280">Gemini 1.5 Flash — conversational replies</text>
+
+  <!-- API -> Dashboard (WebSocket) -->
+  <line x1="360" y1="426" x2="245" y2="484" stroke="#ea580c" stroke-width="2" marker-end="url(#arr-orange)"/>
+  <text x="268" y="463" text-anchor="middle" font-size="9" fill="#ea580c" font-weight="bold">WebSocket</text>
+
+  <!-- API -> Bot (HTTP + WS) -->
+  <line x1="600" y1="426" x2="715" y2="484" stroke="#7c3aed" stroke-width="2" marker-end="url(#arr-purple)"/>
+  <text x="692" y="463" text-anchor="middle" font-size="9" fill="#7c3aed" font-weight="bold">HTTP + WS</text>
+
+  <!-- ══════════════════════════════════════════
+       LAYER 5 — USER / OUTPUTS
+  ══════════════════════════════════════════ -->
+  <rect x="30" y="598" width="900" height="16" rx="4" fill="#f1f5f9"/>
+  <text x="480" y="610" text-anchor="middle" font-size="10" fill="#475569" font-weight="bold" letter-spacing="2">USER / OUTPUT LAYER</text>
+
+  <rect x="60"  y="622" width="370" height="52" rx="8" fill="#f1f5f9" stroke="#64748b" stroke-width="2"/>
+  <text x="245" y="644" text-anchor="middle" font-size="13" font-weight="bold" fill="#334155">Browser — Live Dashboard</text>
+  <text x="245" y="662" text-anchor="middle" font-size="10" fill="#475569">Real-time device status · Power charts · Alert feed</text>
+
+  <rect x="530" y="622" width="370" height="52" rx="8" fill="#f1f5f9" stroke="#64748b" stroke-width="2"/>
+  <text x="715" y="644" text-anchor="middle" font-size="13" font-weight="bold" fill="#334155">Discord Server</text>
+  <text x="715" y="662" text-anchor="middle" font-size="10" fill="#475569">Command replies + Proactive alert messages</text>
+
+  <!-- Dashboard -> Browser -->
+  <line x1="245" y1="564" x2="245" y2="622" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+  <!-- Bot -> Discord -->
+  <line x1="715" y1="564" x2="715" y2="622" stroke="#475569" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- ═══ BOSS label bottom center ═══ -->
+  <text x="480" y="698" text-anchor="middle" font-size="11" fill="#64748b">↑  Both outputs serve the same boss / user  ↑</text>
+
+  <!-- ═══ Legend ═══ -->
+  <line x1="780" y1="678" x2="810" y2="678" stroke="#475569" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <text x="815" y="682" font-size="9" fill="#475569">Simulated link</text>
+  <line x1="780" y1="694" x2="810" y2="694" stroke="#475569" stroke-width="1.5"/>
+  <text x="815" y="698" font-size="9" fill="#475569">Live data link</text>
+</svg>
