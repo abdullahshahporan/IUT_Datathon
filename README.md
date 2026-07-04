@@ -52,38 +52,62 @@ A real-time office device monitoring system with a live web dashboard and Discor
 
 ## Setup
 
-### 1. Install dependencies
-
-Build the shared package first — all other services depend on it.
+### 1. Install all dependencies (one command)
 
 ```bash
-cd shared
-npm install
-npm run build
-
-cd ../backend
-npm install
-
-cd ../frontend
-npm install
-
-cd ../bot
-npm install
+npm run setup
 ```
+
+This builds the shared types package first, then installs backend, frontend, and bot in sequence.
 
 ### 2. Configure environment variables
 
-Copy and fill in the `.env` files for each service (see tables below).
+Copy the example files and fill in your values:
 
 ```bash
-# backend
-cp backend/.env.example backend/.env
+cp backend/.env.example  backend/.env
+cp frontend/.env.example frontend/.env
+cp bot/.env.example      bot/.env
+```
+
+Edit `bot/.env` and set at minimum:
+- `DISCORD_BOT_TOKEN` — from [discord.com/developers](https://discord.com/developers/applications)
+- `GEMINI_API_KEY` — from [aistudio.google.com](https://aistudio.google.com/apikey) (free)
+- `ALERT_CHANNEL_ID` — Discord channel ID for proactive alert messages
 
 # frontend
 cp frontend/.env.example frontend/.env
 
 # bot
 cp bot/.env.example bot/.env
+```
+
+---
+
+## Running the System
+
+### Option A — One command (recommended)
+
+```bash
+npm run dev
+```
+
+Starts backend, frontend, and bot **concurrently** with colour-coded log prefixes.
+The dashboard opens at **http://localhost:5173**.
+
+> Make sure all three `.env` files are filled in before running.
+
+### Option B — Separate terminals (useful for debugging)
+
+```bash
+# Terminal 1 — backend
+cd backend && npm run dev
+
+# Terminal 2 — frontend
+cd frontend && npm run dev
+
+# Terminal 3 — bot
+cd bot && npm run dev
 ```
 
 ---
@@ -118,25 +142,6 @@ cp bot/.env.example bot/.env
 | `COMMAND_PREFIX` | `!` | Prefix for bot commands |
 | `ALERT_CHANNEL_ID` | optional | Discord channel ID for proactive alert messages |
 | `GEMINI_API_KEY` | optional | Google Gemini API key for conversational replies |
-
----
-
-## Running the System
-
-Start each service in a separate terminal. **Order matters.**
-
-```bash
-# Terminal 1 — backend
-cd backend && npm run dev
-
-# Terminal 2 — frontend
-cd frontend && npm run dev
-
-# Terminal 3 — bot (after setting DISCORD_BOT_TOKEN)
-cd bot && npm run dev
-```
-
-The dashboard will be available at **http://localhost:5173**.
 
 ---
 

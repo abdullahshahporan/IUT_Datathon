@@ -1,0 +1,21 @@
+{
+  "name": "smart-office-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Smart Office Monitoring System — IUT Datathon / Techhathon Nationals",
+  "scripts": {
+    "setup": "npm run setup:shared && npm run setup:backend && npm run setup:frontend && npm run setup:bot",
+    "setup:shared": "cd shared && npm install && npm run build",
+    "setup:backend": "cd backend && npm install",
+    "setup:frontend": "cd frontend && npm install",
+    "setup:bot": "cd bot && npm install",
+    "dev": "concurrently --names \"BACKEND,FRONTEND,BOT\" --prefix-colors \"cyan,magenta,yellow\" \"npm run dev:backend\" \"npm run dev:frontend\" \"npm run dev:bot\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:bot": "cd bot && npm run dev",
+    "build": "npm run setup:shared && concurrently \"cd backend && npm run build\" \"cd frontend && npm run build\" \"cd bot && npm run build\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
