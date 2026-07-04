@@ -218,10 +218,3 @@ Circuit covers: ESP32 + 5 relay-simulated LEDs (Fan1=GPIO14, Fan2=GPIO27, Light1
 ## Video Demo
 
 > 🎥 **[Watch the demo on Google Drive](https://drive.google.com/drive/folders/1C8hBTlZiUl3VOT6sdjvaUPc38wtIaKRo?usp=sharing)**
->
-> *(Upload your recorded demo to Google Drive with link sharing set to public, then replace the URL above)*
-
-The demo shows:
-1. Web dashboard live — devices toggling, power gauge, floor plan animations, alert feed
-2. Discord bot in action — `!status`, `!room work1`, `!usage`, `!alerts`, proactive alert message
-3. Brief explanation of the data flow and architecture
