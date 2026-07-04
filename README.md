@@ -52,38 +52,62 @@ A real-time office device monitoring system with a live web dashboard and Discor
 
 ## Setup
 
-### 1. Install dependencies
-
-Build the shared package first — all other services depend on it.
+### 1. Install all dependencies (one command)
 
 ```bash
-cd shared
-npm install
-npm run build
-
-cd ../backend
-npm install
-
-cd ../frontend
-npm install
-
-cd ../bot
-npm install
+npm run setup
 ```
+
+This builds the shared types package first, then installs backend, frontend, and bot in sequence.
 
 ### 2. Configure environment variables
 
-Copy and fill in the `.env` files for each service (see tables below).
+Copy the example files and fill in your values:
 
 ```bash
-# backend
-cp backend/.env.example backend/.env
+cp backend/.env.example  backend/.env
+cp frontend/.env.example frontend/.env
+cp bot/.env.example      bot/.env
+```
+
+Edit `bot/.env` and set at minimum:
+- `DISCORD_BOT_TOKEN` — from [discord.com/developers](https://discord.com/developers/applications)
+- `GEMINI_API_KEY` — from [aistudio.google.com](https://aistudio.google.com/apikey) (free)
+- `ALERT_CHANNEL_ID` — Discord channel ID for proactive alert messages
 
 # frontend
 cp frontend/.env.example frontend/.env
 
 # bot
 cp bot/.env.example bot/.env
+```
+
+---
+
+## Running the System
+
+### Option A — One command (recommended)
+
+```bash
+npm run dev
+```
+
+Starts backend, frontend, and bot **concurrently** with colour-coded log prefixes.
+The dashboard opens at **http://localhost:5173**.
+
+> Make sure all three `.env` files are filled in before running.
+
+### Option B — Separate terminals (useful for debugging)
+
+```bash
+# Terminal 1 — backend
+cd backend && npm run dev
+
+# Terminal 2 — frontend
+cd frontend && npm run dev
+
+# Terminal 3 — bot
+cd bot && npm run dev
 ```
 
 ---
@@ -118,25 +142,6 @@ cp bot/.env.example bot/.env
 | `COMMAND_PREFIX` | `!` | Prefix for bot commands |
 | `ALERT_CHANNEL_ID` | optional | Discord channel ID for proactive alert messages |
 | `GEMINI_API_KEY` | optional | Google Gemini API key for conversational replies |
-
----
-
-## Running the System
-
-Start each service in a separate terminal. **Order matters.**
-
-```bash
-# Terminal 1 — backend
-cd backend && npm run dev
-
-# Terminal 2 — frontend
-cd frontend && npm run dev
-
-# Terminal 3 — bot (after setting DISCORD_BOT_TOKEN)
-cd bot && npm run dev
-```
-
-The dashboard will be available at **http://localhost:5173**.
 
 ---
 
@@ -192,6 +197,31 @@ The bot also **proactively posts** to the configured alert channel whenever an a
 
 ## Diagrams
 
-See the [`docs/diagrams/`](docs/diagrams/) folder for:
-- `system-diagram.png` — high-level data flow diagram
-- `wokwi-schematic.png` — ESP32 + relay module hardware schematic (one representative room)
+## Diagrams
+
+### System Architecture Diagram
+
+![System Architecture](docs/diagrams/system-diagram.svg)
+
+> Full data-flow: `Office Devices → DeviceSimulator → OfficeStore ↔ AlertEngine → Express API + Socket.IO → React Dashboard (WebSocket) + Discord Bot (HTTP + WS)`
+
+### Hardware / Electrical Schematic (Wokwi)
+The ESP32 circuit for one representative room is in [`docs/wokwi/`](docs/wokwi/):
+- [`docs/wokwi/diagram.json`](docs/wokwi/diagram.json) — import directly into [wokwi.com](https://wokwi.com)
+- [`docs/wokwi/sketch.ino`](docs/wokwi/sketch.ino) — Arduino firmware (paste into Wokwi's code editor)
+- [`docs/wokwi-plan.md`](docs/wokwi-plan.md) — full wiring guide, pin mapping, and electrical reasoning
+
+Circuit covers: ESP32 + 5 relay-simulated LEDs (Fan1=GPIO14, Fan2=GPIO27, Light1=GPIO26, Light2=GPIO25, Light3=GPIO33) + ACS712 current sensor (potentiometer on GPIO34) + push button (GPIO0).
+
+---
+
+## Video Demo
+
+> 🎥 **[Watch the demo on Google Drive](https://drive.google.com/drive/folders/1C8hBTlZiUl3VOT6sdjvaUPc38wtIaKRo?usp=sharing)**
+>
+> *(Upload your recorded demo to Google Drive with link sharing set to public, then replace the URL above)*
+
+The demo shows:
+1. Web dashboard live — devices toggling, power gauge, floor plan animations, alert feed
+2. Discord bot in action — `!status`, `!room work1`, `!usage`, `!alerts`, proactive alert message
+3. Brief explanation of the data flow and architecture

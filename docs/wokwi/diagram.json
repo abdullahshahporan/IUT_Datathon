@@ -1,0 +1,61 @@
+{
+  "version": 1,
+  "author": "Smart Office",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "wokwi-esp32-devkit-v1",
+      "id": "esp",
+      "top": 90,
+      "left": 320,
+      "attrs": {}
+    },
+
+    { "type": "wokwi-resistor", "id": "rf1", "top": 132, "left": 195, "rotate": 90, "attrs": { "value": "220" } },
+    { "type": "wokwi-led",      "id": "lf1", "top": 120, "left": 115, "attrs": { "color": "blue" } },
+
+    { "type": "wokwi-resistor", "id": "rf2", "top": 180, "left": 195, "rotate": 90, "attrs": { "value": "220" } },
+    { "type": "wokwi-led",      "id": "lf2", "top": 168, "left": 115, "attrs": { "color": "blue" } },
+
+    { "type": "wokwi-resistor", "id": "rl1", "top": 228, "left": 195, "rotate": 90, "attrs": { "value": "220" } },
+    { "type": "wokwi-led",      "id": "ll1", "top": 216, "left": 115, "attrs": { "color": "yellow" } },
+
+    { "type": "wokwi-resistor", "id": "rl2", "top": 276, "left": 195, "rotate": 90, "attrs": { "value": "220" } },
+    { "type": "wokwi-led",      "id": "ll2", "top": 264, "left": 115, "attrs": { "color": "yellow" } },
+
+    { "type": "wokwi-resistor", "id": "rl3", "top": 324, "left": 195, "rotate": 90, "attrs": { "value": "220" } },
+    { "type": "wokwi-led",      "id": "ll3", "top": 312, "left": 115, "attrs": { "color": "yellow" } },
+
+    { "type": "wokwi-potentiometer", "id": "pot", "top": 140, "left": 580, "attrs": {} },
+
+    { "type": "wokwi-pushbutton", "id": "btn", "top": 430, "left": 370, "attrs": { "color": "green" } }
+  ],
+  "connections": [
+    ["esp:D14", "rf1:1",  "cyan",   ["h-30"]],
+    ["rf1:2",   "lf1:A",  "cyan",   []],
+    ["lf1:K",   "esp:GND.1", "black", ["h30", "v-50"]],
+
+    ["esp:D27", "rf2:1",  "cyan",   ["h-30"]],
+    ["rf2:2",   "lf2:A",  "cyan",   []],
+    ["lf2:K",   "esp:GND.1", "black", []],
+
+    ["esp:D26", "rl1:1",  "gold",   ["h-30"]],
+    ["rl1:2",   "ll1:A",  "gold",   []],
+    ["ll1:K",   "esp:GND.1", "black", []],
+
+    ["esp:D25", "rl2:1",  "gold",   ["h-30"]],
+    ["rl2:2",   "ll2:A",  "gold",   []],
+    ["ll2:K",   "esp:GND.2", "black", []],
+
+    ["esp:D33", "rl3:1",  "gold",   ["h-30"]],
+    ["rl3:2",   "ll3:A",  "gold",   []],
+    ["ll3:K",   "esp:GND.2", "black", []],
+
+    ["esp:3V3",  "pot:VCC", "red",    ["h30"]],
+    ["esp:GND.2","pot:GND", "black",  ["h30"]],
+    ["pot:SIG",  "esp:D34", "purple", []],
+
+    ["esp:D0",   "btn:1.l", "green",  []],
+    ["btn:2.l",  "esp:GND.1","black", []]
+  ]
+}
