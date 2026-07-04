@@ -28,9 +28,8 @@ export class DiscordBot {
       throw new Error("DISCORD_BOT_TOKEN is required");
     }
 
-    this.client.once("ready", () => {
-      const tag = this.client.user?.tag ?? "unknown";
-      console.log(`Discord bot ready as ${tag}`);
+    this.client.once("clientReady", (readyClient) => {
+      console.log(`Discord bot ready as ${readyClient.user.tag}`);
       this.alertRelay.start();
     });
 

@@ -1,13 +1,23 @@
 import { env } from "../config/env";
 import {
-  AlertsResponse,
-  DeviceListResponse,
+  DeviceRecord,
   RoomSummary,
-  RoomsResponse,
-  UsageResponse,
   AlertRecord,
   UsageSnapshot,
 } from "smart-office-shared";
+
+// Inline response wrapper shapes that match the backend REST API
+interface ListResponse<T> { data: T[]; total?: number }
+interface SingleResponse<T> { data: T }
+interface UsageResponseBody {
+  data: {
+    usage: UsageSnapshot;
+    powerHistory: {
+      total: Array<{ timestamp: string; watts: number }>;
+      rooms: Record<string, Array<{ timestamp: string; watts: number }>>;
+    };
+  };
+}
 
 async function request<T>(path: string): Promise<T> {
   const response = await fetch(`${env.backendApiUrl}${path}`);
@@ -20,26 +30,26 @@ async function request<T>(path: string): Promise<T> {
 }
 
 export class BackendApi {
-  async getDevices(): Promise<DeviceListResponse> {
-    return request<DeviceListResponse>("/devices");
+  async getDevices(): Promise<ListResponse<DeviceRecord>> {
+    return request<ListResponse<DeviceRecord>>("/devices");
   }
 
-  async getRooms(): Promise<RoomsResponse> {
-    return request<RoomsResponse>("/rooms");
+  async getRooms(): Promise<ListResponse<RoomSummary>> {
+    return request<ListResponse<RoomSummary>>("/rooms");
   }
 
-  async getAlerts(includeAll = false): Promise<AlertsResponse> {
-    return request<AlertsResponse>(`/alerts${includeAll ? "?active=false" : ""}`);
+  async getAlerts(includeAll = false): Promise<ListResponse<AlertRecord>> {
+    return request<ListResponse<AlertRecord>>(`/alerts${includeAll ? "?active=false" : ""}`);
   }
 
   async getUsage(): Promise<UsageSnapshot> {
-    const response = await request<UsageResponse>("/usage");
+    const response = await request<UsageResponseBody>("/usage");
     return response.data.usage;
   }
 
   async getRoomByCode(code: string): Promise<RoomSummary | null> {
     const response = await this.getRooms();
-    return response.data.find((room) => room.code === code) ?? null;
+    return response.data.find((room: RoomSummary) => room.code === code) ?? null;
   }
 
   async getAlertsText(): Promise<string> {
@@ -48,7 +58,7 @@ export class BackendApi {
       return "There are no active alerts right now.";
     }
 
-    return response.data.map((alert) => `${alert.roomName}: ${alert.title}`).join("\n");
+    return response.data.map((alert: AlertRecord) => `${alert.roomName}: ${alert.title}`).join("\n");
   }
 
   async getAlertPayloads(): Promise<AlertRecord[]> {
