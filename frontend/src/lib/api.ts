@@ -48,3 +48,9 @@ export async function dismissAlert(alertId: string): Promise<AlertRecord> {
 export async function fetchUsage(): Promise<UsageResponse> {
   return request<UsageResponse>("/usage");
 }
+
+export async function toggleDevice(deviceId: string): Promise<any> {
+  return request<any>(`/devices/${deviceId}/toggle`, {
+    method: "POST",
+  });
+}
