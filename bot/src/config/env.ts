@@ -19,4 +19,5 @@ export const env = {
   commandPrefix: process.env.COMMAND_PREFIX ?? "!",
   alertChannelId: process.env.ALERT_CHANNEL_ID ?? "",
   alertPollIntervalMs: parseNumber(process.env.ALERT_POLL_INTERVAL_MS, 15_000),
+  geminiApiKey: process.env.GEMINI_API_KEY ?? "",
 };

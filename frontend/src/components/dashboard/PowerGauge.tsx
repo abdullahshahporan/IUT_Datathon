@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Card, CardDescription, CardTitle } from "@/components/ui/Card";
 import { formatWatts } from "@/lib/format";
 
-export function PowerGauge({ value, max = 500 }: { value: number; max?: number }) {
+export function PowerGauge({ value, max = 495 }: { value: number; max?: number }) {
   const percent = Math.min(100, Math.round((value / max) * 100));
   const radius = 74;
   const circumference = 2 * Math.PI * radius;

@@ -1,6 +1,6 @@
-import { AFTER_HOURS_START, ROOM_ALERT_THRESHOLD_MS } from "../config/constants";
+import { AFTER_HOURS_START, BEFORE_HOURS_END, HIGH_POWER_THRESHOLD_WATTS, MAX_OFFICE_WATTS, ROOM_ALERT_THRESHOLD_MS } from "../config/constants";
 import { AlertRecord, DeviceChangeResult } from "smart-office-shared";
-import { hoursBetween, isAfterOfficeHours, toIso } from "../utils/time";
+import { getOfficeHoursLabel, hoursBetween, isOutsideOfficeHours, toIso } from "../utils/time";
 import { OfficeStore } from "./OfficeStore";
 
 type AlertCreationInput = Parameters<OfficeStore["createAlert"]>[0];
@@ -15,18 +15,19 @@ export class AlertEngine {
     if (
       change.previous.status === "OFF" &&
       change.current.status === "ON" &&
-      isAfterOfficeHours(now, AFTER_HOURS_START)
+      isOutsideOfficeHours(now, BEFORE_HOURS_END, AFTER_HOURS_START)
     ) {
+      const label = getOfficeHoursLabel(now, BEFORE_HOURS_END, AFTER_HOURS_START);
       const alert = this.createAlert({
         type: "device-on-after-hours",
         severity: "warning",
-        title: "Device turned on after office hours",
-        message: `${change.current.name} in ${change.current.roomName} turned on after 5 PM.`,
+        title: `Device turned on ${label}`,
+        message: `${change.current.name} in ${change.current.roomName} was switched on ${label}.`,
         roomId: change.current.roomId,
         roomName: change.current.roomName,
         deviceId: change.current.id,
         deviceName: change.current.name,
-        signature: `after-hours:${change.current.id}:${toIso(now).slice(0, 16)}`,
+        signature: `outside-hours:${change.current.id}:${toIso(now).slice(0, 16)}`,
         timestamp: now,
       });
 
@@ -75,6 +76,37 @@ export class AlertEngine {
     }
 
     return alerts;
+  }
+
+  /**
+   * Fires a high-power-consumption alert when total office watts exceed 85% of
+   * the theoretical maximum (495 W). Deduplicated by a rolling 10-minute window.
+   */
+  evaluateHighPowerAlert(totalWatts: number, timestamp = new Date()): AlertRecord[] {
+    if (totalWatts < HIGH_POWER_THRESHOLD_WATTS) {
+      return [];
+    }
+
+    const windowKey = toIso(timestamp).slice(0, 15); // deduplicate per 10-min window
+    const signature = `high-power:${windowKey}`;
+
+    if (this.store.hasActiveAlert(signature)) {
+      return [];
+    }
+
+    const percentUsed = Math.round((totalWatts / MAX_OFFICE_WATTS) * 100);
+    const alert = this.createAlert({
+      type: "high-power-consumption",
+      severity: "warning",
+      title: "High power consumption detected",
+      message: `Office is drawing ${totalWatts} W — ${percentUsed}% of max capacity (${MAX_OFFICE_WATTS} W). Consider turning off unused devices.`,
+      roomId: "drawing-room", // use as a placeholder; this is an office-wide alert
+      roomName: "Office-wide",
+      signature,
+      timestamp,
+    });
+
+    return alert ? [alert] : [];
   }
 
   private createAlert(input: AlertCreationInput): AlertRecord | null {

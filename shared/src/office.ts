@@ -8,7 +8,7 @@ export type DeviceStatus = "ON" | "OFF";
 
 export type AlertSeverity = "info" | "warning" | "critical";
 
-export type AlertType = "device-on-after-hours" | "room-on-too-long";
+export type AlertType = "device-on-after-hours" | "room-on-too-long" | "high-power-consumption";
 
 export interface DeviceRecord {
   id: string;

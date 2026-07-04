@@ -3,6 +3,7 @@ import { io, Socket } from "socket.io-client";
 import { env } from "../config/env";
 import { AlertRecord } from "smart-office-shared";
 import { formatAlertSummary } from "../utils/format";
+import { formatResponse } from "./LlmFormatter";
 
 type RelayEvents = {
   "alert:new": (alert: AlertRecord) => void;
@@ -25,12 +26,14 @@ export class AlertRelay {
 
     this.socket.on("alert:new", async (alert) => {
       const channel = await this.resolveAlertChannel();
+      const message = await this.buildAlertMessage(alert);
+
       if (!channel) {
         console.log(`[alert:new] ${formatAlertSummary(alert)}`);
         return;
       }
 
-      await channel.send(this.formatAlertMessage(alert));
+      await channel.send(message);
     });
   }
 
@@ -56,18 +59,31 @@ export class AlertRelay {
     return channel && channel.isTextBased() ? (channel as TextChannel) : null;
   }
 
-  private formatAlertMessage(alert: AlertRecord): string {
+  private async buildAlertMessage(alert: AlertRecord): Promise<string> {
     const severityEmoji = alert.severity === "critical" ? "🚨" : alert.severity === "warning" ? "⚠️" : "ℹ️";
-    const deviceLine = alert.deviceName ? `Device: ${alert.deviceName}\n` : "";
+    const timestamp = `<t:${Math.floor(new Date(alert.generatedAt).getTime() / 1000)}:R>`;
 
-    return [
-      `${severityEmoji} ${alert.roomName} alert`,
-      alert.title,
+    const rawFallback = [
+      `${severityEmoji} **${alert.roomName}** — ${alert.title}`,
       alert.message,
-      deviceLine ? deviceLine.trimEnd() : "",
-      `Generated at: <t:${Math.floor(new Date(alert.generatedAt).getTime() / 1000)}:R>`,
+      alert.deviceName ? `Device: ${alert.deviceName}` : "",
+      `Triggered: ${timestamp}`,
     ]
       .filter(Boolean)
       .join("\n");
+
+    const friendly = await formatResponse(
+      "alert",
+      {
+        severity: alert.severity,
+        room: alert.roomName,
+        title: alert.title,
+        message: alert.message,
+        device: alert.deviceName ?? null,
+      },
+      alert.message,
+    );
+
+    return `${severityEmoji} ${friendly}\n${timestamp}`;
   }
 }
